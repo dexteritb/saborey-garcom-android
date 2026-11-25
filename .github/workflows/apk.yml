@@ -1,9 +1,11 @@
 # Monta o APK do app do garçom a cada envio (e quando pedido em Actions → "Run workflow").
-# O APK fica para baixar em Actions → (última execução) → Artifacts.
+# O APK fica para baixar em Releases → "APK de teste" (e também em Actions → execução → Artifacts).
 name: Montar APK
 on:
   push:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -16,7 +18,19 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Montar APK de teste (debug)
         run: chmod +x gradlew && ./gradlew assembleDebug --stacktrace
+      - name: Dar nome ao APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk saborey-garcom-teste.apk
       - uses: actions/upload-artifact@v4
         with:
           name: saborey-garcom-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: saborey-garcom-teste.apk
+      - name: Publicar em Releases (APK de teste)
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-teste
+          name: APK de teste
+          prerelease: true
+          make_latest: false
+          body: "APK de teste (assinado com a chave de testes). Atualizado automaticamente a cada mudança. Versão do commit: ${{ github.sha }}"
+          files: saborey-garcom-teste.apk
