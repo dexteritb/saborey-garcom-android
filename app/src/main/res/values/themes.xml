@@ -1,5 +1,5 @@
 <resources>
-    <style name="Tema" parent="Theme.AppCompat.NoActionBar">
+    <style name="Tema" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/fundo</item>
         <item name="android:statusBarColor">@color/fundo</item>
         <item name="android:navigationBarColor">@color/fundo</item>

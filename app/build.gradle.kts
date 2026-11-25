@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -12,21 +13,22 @@ android {
         applicationId = "br.com.saborey.garcom.app"
         minSdk = 23            // Stone: Android 6.0 (API 23) ou superior
         targetSdk = 34
-        versionCode = 1        // Stone: inteiro positivo, sobe a cada versão
-        versionName = "1.0.0"  // Stone: só números e pontos, até 12 caracteres
-        // Endereço do app do garçom (Stone exige HTTPS para qualquer site fora da Stone)
-        buildConfigField("String", "URL_APP", "\"https://garcom.ecodados.app.br/garcom\"")
-        // Esquema de retorno do Deeplink da Stone (tem que ser igual ao do AndroidManifest)
+        versionCode = 2        // Stone: inteiro positivo, sobe a cada versão
+        versionName = "1.1.0"  // Stone: só números e pontos, até 12 caracteres
+        // Servidor do sistema (Stone exige HTTPS para qualquer endereço fora da Stone)
+        buildConfigField("String", "SERVIDOR", "\"https://garcom.ecodados.app.br\"")
+        // Esquema de retorno do Deeplink da Stone (igual ao do AndroidManifest)
         buildConfigField("String", "ESQUEMA_RETORNO", "\"saboreygarcom\"")
         manifestPlaceholders["esquemaRetorno"] = "saboreygarcom"
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
+        release { isMinifyEnabled = false }
     }
-    buildFeatures { buildConfig = true }
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -35,7 +37,12 @@ android {
 }
 
 dependencies {
+    val bom = platform("androidx.compose:compose-bom:2024.09.03")
+    implementation(bom)
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.webkit:webkit:1.11.0")
+    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material3:material3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 }
