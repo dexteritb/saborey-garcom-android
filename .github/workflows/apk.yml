@@ -18,8 +18,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Montar APK de teste (debug)
         run: chmod +x gradlew && ./gradlew assembleDebug --stacktrace
-      - name: Dar nome ao APK
-        run: cp app/build/outputs/apk/debug/app-debug.apk saborey-garcom-teste.apk
+      - name: Dar nome aos APKs
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk saborey-garcom-teste.apk
+          cp motoboy/build/outputs/apk/debug/motoboy-debug.apk saborey-motoboy.apk
       - uses: actions/upload-artifact@v4
         with:
           name: saborey-garcom-debug-apk
@@ -34,3 +36,17 @@ jobs:
           make_latest: false
           body: "APK de teste (assinado com a chave de testes). Atualizado automaticamente a cada mudança. Versão do commit: ${{ github.sha }}"
           files: saborey-garcom-teste.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: saborey-motoboy-apk
+          path: saborey-motoboy.apk
+      - name: Publicar em Releases (app do motoboy)
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-motoboy
+          name: App do motoboy
+          prerelease: false
+          make_latest: true
+          body: "App Saborey Motoboy (Android). Baixe o saborey-motoboy.apk no celular do motoboy e instale. Versões novas instalam por cima. Commit: ${{ github.sha }}"
+          files: saborey-motoboy.apk

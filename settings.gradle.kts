@@ -7,3 +7,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "SaboreyGarcom"
 include(":app")
+include(":motoboy")
