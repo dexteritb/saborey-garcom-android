@@ -21,7 +21,7 @@ import java.net.URL
 import java.util.concurrent.Executors
 
 /**
- * Manda o GPS do motoboy para a Saborey a cada ~15 s enquanto ele tem entrega em rota.
+ * Manda o GPS do motoboy para a Saborey a cada ~5 s enquanto ele tem entrega em rota.
  * Funciona com a tela apagada e com o Google Maps aberto (serviço em primeiro plano, com notificação fixa).
  * Para sozinho quando o sistema responde que não há mais entrega em rota, ou quando a sessão cai.
  */
@@ -49,8 +49,8 @@ class Localizacao : Service() {
         } catch (_: Exception) { stopSelf(); return START_NOT_STICKY } // sem permissão de localização
         if (!ligado) {
             try {
-                val pedido = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 15_000L)
-                    .setMinUpdateIntervalMillis(10_000L)
+                val pedido = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5_000L)
+                    .setMinUpdateIntervalMillis(4_000L)
                     .setWaitForAccurateLocation(false)
                     .build()
                 gps.requestLocationUpdates(pedido, retorno, Looper.getMainLooper())
@@ -62,7 +62,7 @@ class Localizacao : Service() {
 
     private fun mandar(l: Location) {
         val agora = System.currentTimeMillis()
-        if (agora - ultimoEnvio < 9_000L) return
+        if (agora - ultimoEnvio < 4_000L) return
         ultimoEnvio = agora
         val s = sessao; val b = base
         val corpo = "{\"lat\":${l.latitude},\"lng\":${l.longitude},\"precisao\":${if (l.hasAccuracy()) l.accuracy.toInt() else 0}" +
